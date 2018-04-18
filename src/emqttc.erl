@@ -291,9 +291,10 @@ subscribe(Client, [{_Topic, _Qos} | _] = Topics) ->
 %% @doc Subscribe topic or topics and wait until suback received.
 %% @end
 %%------------------------------------------------------------------------------
--spec sync_subscribe(Client, Topics) -> {ok, mqtt_qos() | [mqtt_qos()]} when
-    Client    :: pid() | atom(),
-    Topics    :: [{binary(), mqtt_qos()}] | {binary(), mqtt_qos()} | binary().
+-spec sync_subscribe(Client, Topics) ->
+    {ok, (mqtt_qos() | ?QOS_UNAUTHORIZED) | [mqtt_qos() | ?QOS_UNAUTHORIZED]} | {error, any()} when
+        Client    :: pid() | atom(),
+        Topics    :: [{binary(), mqtt_qos()}] | {binary(), mqtt_qos()} | binary().
 sync_subscribe(Client, Topic) when is_binary(Topic) ->
     sync_subscribe(Client, {Topic, ?QOS_0});
 sync_subscribe(Client, {Topic, Qos}) when is_binary(Topic), (?IS_QOS(Qos) orelse is_atom(Qos)) ->
@@ -321,7 +322,7 @@ subscribe(Client, Topic, Qos) when is_binary(Topic), (?IS_QOS(Qos) orelse is_ato
 %% @doc Subscribe Topic with QoS and wait until suback received.
 %% @end
 %%------------------------------------------------------------------------------
--spec sync_subscribe(Client, Topic, Qos) -> {ok, mqtt_qos()} when
+-spec sync_subscribe(Client, Topic, Qos) -> {ok, mqtt_qos() | ?QOS_UNAUTHORIZED} | {error, any()} when
     Client    :: pid() | atom(),
     Topic     :: binary(),
     Qos       :: qos0 | qos1 | qos2 | mqtt_qos().
