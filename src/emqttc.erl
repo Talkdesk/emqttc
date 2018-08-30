@@ -1072,7 +1072,7 @@ reply_timeout({Ack, ReqId}, State=#state{inflight_reqs = InflightReqs}) ->
 %% @doc Dispatch Publish Message to subscribers.
 %% @end
 %%------------------------------------------------------------------------------
-dispatch(Publish = {publish, TopicName, _Payload}, #state{recipient = Recipient,
+dispatch(Publish = {publish, TopicName, Payload}, #state{recipient = Recipient,
                                                           pubsub_map = PubSubMap}) ->
     Matched =
     lists:foldl(
@@ -1088,9 +1088,9 @@ dispatch(Publish = {publish, TopicName, _Payload}, #state{recipient = Recipient,
     if
         length(Matched) =:= 0 ->
             %% Dispath to Recipient if no subscription matched.
-            Recipient ! Publish;
+            Recipient ! {publish, Payload};
         true ->
-            [Sub ! Publish || Sub <- unique(Matched)], ok
+            [Sub ! {publish, Payload} || Sub <- unique(Matched)], ok
     end.
 
 qos_opt(qos2) ->
