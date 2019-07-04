@@ -189,7 +189,7 @@ start_link(Name, MqttOpts, TcpOpts) when is_atom(Name), is_list(MqttOpts), is_li
     Recipient :: pid() | atom(),
     MqttOpts  :: [mqttc_opt()],
     TcpOpts   :: [gen_tcp:connect_option()].
-start_link(Name, Recipient, MqttOpts, TcpOpts) when is_pid(Recipient), is_atom(Name), is_list(MqttOpts), is_list(TcpOpts) ->
+start_link(Name, Recipient, MqttOpts, TcpOpts) when is_pid(Recipient) orelse is_atom(Recipient), is_atom(Name), is_list(MqttOpts), is_list(TcpOpts) ->
     gen_fsm:start_link({local, Name}, ?MODULE, [Name, Recipient, MqttOpts, TcpOpts], []).
 
 %%------------------------------------------------------------------------------
